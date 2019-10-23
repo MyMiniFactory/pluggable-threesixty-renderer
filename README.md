@@ -1,10 +1,10 @@
 # Threesixty Renderer
 
-Threesixty Renderer is a docker container to generate two 180° images (one horizontal and one vertical) from a 3D file.
+Threesixty Renderer is a docker container to generate two 360° images (one horizontal and one vertical) from a 3D file.
 It uses :
 - [assimp](https://github.com/assimp/assimp) to convert the 3D file to stl (see the `assimp` documentation for the supported file format).
 - [stl2pov](https://github.com/timschmidt/stl2pov) for the conversion from stl to .pov format supported by `Pov-Ray`.
-- [Pov-Ray](https://github.com/POV-Ray/povray) to render the images used in the 180° image composite.
+- [Pov-Ray](https://github.com/POV-Ray/povray) to render the images used in the 360° image composite.
 
 example images generated :
 ![vertical](https://i.imgur.com/FNZ24ln.png)
