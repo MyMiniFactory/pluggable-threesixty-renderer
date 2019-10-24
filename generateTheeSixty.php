@@ -41,7 +41,8 @@ foreach ($filesToProcess as $file) {
         $file_extension = pathinfo($file["objectPath"], PATHINFO_EXTENSION);
 
         // Checking validity of file for stl2pov
-        if($file_extension != "stl" || $file_extension != "STL" && file_exists($file["objectPath"])){
+        if(file_exists($file["objectPath"]) &&  strtolower($file_extension) != "stl"){
+          echo(PHP_EOL."Converting file to stl".PHP_EOL);
             $stlPath = str_replace($file_extension, 'stl', $file["objectPath"]);
             exec("assimp export ".$file["objectPath"]." ".$stlPath);
             if(file_exists($stlPath)){
@@ -57,8 +58,8 @@ foreach ($filesToProcess as $file) {
     echo($file["objectPath"]);
 
     // Stl simplification under threshold
-    $treshold = 5;
-    $filesize = round(filesize($file["objectPath"]) / 1024 / 1024, 1);
+    $treshold = 5242880;
+    $filesize = filesize($file["objectPath"]);
     echo(PHP_EOL."old size : ".$filesize.PHP_EOL);
     if ($filesize > $treshold) {
       $path = "tmp/".$file["objectName"]."-simplified.stl";
@@ -70,7 +71,7 @@ foreach ($filesToProcess as $file) {
 
         rename($path, $file["objectPath"]);
 
-        echo("new size : ".round(filesize($file["objectPath"]) / 1024 / 1024, 1).PHP_EOL);
+        echo("new size : ".filesize($file["objectPath"]).PHP_EOL);
       } else {
         throw new Exception("Error while simplifying file");
       }
