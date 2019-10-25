@@ -18,7 +18,7 @@ The -f tag is optional on LINUX if the `Dockerfile` is properly named (no file e
 
 ## Run the container
 ```shell
-docker run image_name -f|--filename name_of_the_file_without_extension -i|--input input_dir -o|--output output_dir -s|--status path_to_the_folder_where_to_write_the_status_json_file
+docker run image_name [-f,--filename] name_of_the_file_without_extension [-i,--input] input_dir [-o,--output] output_dir [-s,--status] path_to_the_folder_where_to_write_the_status_json_file
 ```
 
 |                         parameter                        |                  example values               |
