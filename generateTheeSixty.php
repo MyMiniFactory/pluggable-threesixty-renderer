@@ -14,8 +14,12 @@ echo($OUTPUTARG . PHP_EOL);
 echo($STATUSARG . PHP_EOL);
 
 // Creating folders
-mkdir($INPUTARG);
-mkdir($OUTPUTARG);
+if(!is_dir($INPUTARG)) {
+  mkdir($INPUTARG);
+}
+if(!is_dir($OUTPUTARG)) {
+  mkdir($OUTPUTARG);
+}
 
 
 $filesInInput = array_slice(scandir($INPUTARG), 2);
@@ -35,6 +39,7 @@ $metadataJson = [];
 
 // Processing each file
 foreach ($filesToProcess as $file) {
+  $time_start = microtime(true); 
 
     // Conversion to stl if its a obj
     if(file_exists($file["objectPath"])) {
@@ -48,7 +53,11 @@ foreach ($filesToProcess as $file) {
             if(file_exists($stlPath)){
               $file["objectPath"] = str_replace($file_extension, "stl", $file["objectPath"]);
             } else {
-              throw new Exception("Error unsuported file type for rendering");
+              echo("Error unsuported file type for rendering");
+              $fp = fopen('/app/files/results.json', 'w');
+              fwrite($fp, json_encode($statusJson));
+              fclose($fp);
+              return 0;
             }
         }
     } else {
@@ -65,7 +74,7 @@ foreach ($filesToProcess as $file) {
       $path = "tmp/".$file["objectName"]."-simplified.stl";
       $percentageDecrease = 1 - round(($filesize - $treshold)/$filesize, 2, PHP_ROUND_HALF_DOWN);
       echo("Percentage to decrease: ".$percentageDecrease.PHP_EOL);
-      exec("/app/Fast-Quadric-Mesh-Simplification/a.out ".$file["objectPath"]." ".$path." ".$percentageDecrease);
+      exec("/app/a.out ".$file["objectPath"]." ".$path." ".$percentageDecrease);
       
       if (file_exists($path)){
 
@@ -78,7 +87,7 @@ foreach ($filesToProcess as $file) {
     };
 
     // Conversion to .pov with stl2pov
-    exec('stl2pov-2.5.0/stl2pov '.$file["objectPath"].' > tmp/'.$file["objectName"].'_w.pov');
+    exec('/app/stl2pov '.$file["objectPath"].' > tmp/'.$file["objectName"].'_w.pov');
     if(!file_exists('tmp/'.$file["objectName"].'_w.pov')) {
         throw new Exception("Error reading the file data content");
 
@@ -118,7 +127,7 @@ foreach ($filesToProcess as $file) {
         // Replacing the name of the mesh to correspond to the template
         while (!feof($reading)) {
           $line = fgets($reading);
-          if (stristr($line,'#declare')) {
+          if (stristr($line,'mesh {')) {
             $line = "#declare m_body= mesh {";
             $replaced = true;
           }
@@ -246,11 +255,15 @@ foreach($files as $file) {
     }
 
 }
+$time_end = microtime(true);
+
+$execution_time = ($time_end - $time_start)/60;
 
 array_push($statusJson, [
   "processing" => [
     "status" => "done",
-    "progress" => "100%"
+    "progress" => "100%",
+    "execution_time" => $execution_time
   ]
 ]);
 
