@@ -1,12 +1,5 @@
 FROM php:7.3.9-cli
 
-ARG UNAME=worker
-ARG UID=1000
-ARG GID=1000
-
-# For classic parent_image
-RUN groupadd --gid $GID $UNAME && useradd --gid $GID --uid $UID $UNAME
-
 WORKDIR /app
 
 # Installing the diferents librairy, Povray and meshlab
@@ -27,7 +20,6 @@ RUN apt-get update && \
     rm -r stl2pov && \
     mv stl2povcompiled stl2pov
 
-
 # Copy the script and the template
 Copy generateTheeSixty.php generateTheeSixty.php 
 Copy template-h.pov template-h.pov 
@@ -35,9 +27,6 @@ Copy template-v.pov template-v.pov
 
 # Creates the tmp folder and 360 folder
 RUN mkdir tmp && \
-    chown -R $UNAME:$UNAME /app && \
     chmod +x stl2pov
-
-USER $UNAME
 
 ENTRYPOINT ["php", "generateTheeSixty.php"]
