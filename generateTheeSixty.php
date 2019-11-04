@@ -61,7 +61,11 @@ foreach ($filesToProcess as $file) {
             }
         }
     } else {
-        throw new Exception("Error file".$file["objectName"]." not found");
+        echo("Error file".$file["objectName"]." not found");
+        $fp = fopen('/app/files/results.json', 'w');
+              fwrite($fp, json_encode($statusJson));
+              fclose($fp);
+              return 0;
     }
 
     echo($file["objectPath"]);
@@ -82,14 +86,18 @@ foreach ($filesToProcess as $file) {
 
         echo("new size : ".filesize($file["objectPath"]).PHP_EOL);
       } else {
-        throw new Exception("Error while simplifying file");
+        echo("Error while simplifying file");
+        $fp = fopen('/app/files/results.json', 'w');
+              fwrite($fp, json_encode($statusJson));
+              fclose($fp);
+              return 0;
       }
     };
 
     // Conversion to .pov with stl2pov
     exec('/app/stl2pov '.$file["objectPath"].' > tmp/'.$file["objectName"].'_w.pov');
     if(!file_exists('tmp/'.$file["objectName"].'_w.pov')) {
-        throw new Exception("Error reading the file data content");
+        echo("Error reading the file data content");
 
         // Writting the error on the status file
         array_push($statusJson, [
@@ -102,6 +110,11 @@ foreach ($filesToProcess as $file) {
         $fp = fopen($STATUSARG.'/status.json', 'w');
         fwrite($fp, json_encode($statusJson));
         fclose($fp);
+
+        $fp = fopen('/app/files/results.json', 'w');
+              fwrite($fp, json_encode($statusJson));
+              fclose($fp);
+              return 0;
     } else {
         // Editing the status file
         array_push($statusJson, [
@@ -178,7 +191,7 @@ foreach ($filesToProcess as $file) {
           // Checking if the frames are generated.
           // We will assume that if frame 0 and 15 exists then the execution was successfull
           if(!file_exists($outputTmpFrames.$file["objectName"].($x == 1 ? '_w' : '_h').'00.png') && !file_exists($outputTmpFrames.$file["objectName"].($x == 1 ? '_w' : '_h').'15.png')){
-              throw new Exception("Error when generating the 360");
+              echo("Error when generating the 360");
 
               // Writting the error on the status file
               array_push($statusJson, [
@@ -191,6 +204,11 @@ foreach ($filesToProcess as $file) {
               $fp = fopen($STATUSARG.'/status.json', 'w');
               fwrite($fp, json_encode($statusJson));
               fclose($fp);
+
+              $fp = fopen('/app/files/results.json', 'w');
+              fwrite($fp, json_encode($statusJson));
+              fclose($fp);
+              return 0;
           } else {
             array_push($statusJson, [
               "Povray rendering" => [
