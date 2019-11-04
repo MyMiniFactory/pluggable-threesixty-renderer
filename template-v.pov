@@ -58,7 +58,7 @@ background {color rgb 1}
 
 
 light_source {
-  <0, Y_offset + Y_pos*1.5, Z_offset*1.5>
+  <0, ((Y_offset + Y_pos*1.5)* -1), Z_offset*1.5>
   rgb 1
   parallel
   point_at <X_offset,Y_offset,Z_offset>
@@ -72,7 +72,7 @@ camera {
   perspective
   right x
   up y
-  location <0, Y_offset + Y_pos*1.5, Z_offset>
+  location <0, ((Y_offset + Y_pos*1.5)* -1), Z_offset>
   sky <0, 0, 1>
   look_at <X_offset, Y_offset, Z_offset>
 }

@@ -25,7 +25,7 @@ background {color rgb 1}
 #declare Y_pos_light = Radius * sin(Theta) * cos(Phi + 9 * pi / 8) + Y_offset;
 
 light_source {
-  <X_pos_light,Y_pos_light,Z_pos>
+  <X_pos_light,(Y_pos_light* -1),Z_pos>
   rgb 1
   parallel
   point_at <X_offset,Y_offset,Z_offset>
@@ -40,7 +40,7 @@ camera {
   right x
   up y
   angle 45.0
-  location <X_pos, Y_pos, Z_pos>
+  location <X_pos,(Y_pos* -1), Z_pos>
   sky <0, 0, 1>
   look_at <X_offset, Y_offset, Z_offset>
 }
