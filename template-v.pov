@@ -23,9 +23,9 @@ background {color rgb 1}
 #declare Theta = - pi / 4;
 #declare Phi = - pi / 4 + 0;
 
-#declare X_offset = Min_ext.x + X_len / 2;
-#declare Y_offset = Min_ext.y + Y_len / 2;
-#declare Z_offset = Min_ext.z + Z_len / 2;
+#declare X_offset = 0;
+#declare Y_offset = 0;
+#declare Z_offset = 0;
 
 #declare X_pos = Radius * sin(Theta) * cos(Phi) + X_offset;
 
