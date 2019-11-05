@@ -157,6 +157,7 @@ foreach ($filesToProcess as $file) {
         }
 
         copy($fileName, 'tmp/'.$file["objectName"].'_h.pov');
+        // copy($fileName, $INPUTARG.'/'.$file["objectName"].'.pov');
 
         $fileName2 = 'tmp/'.$file["objectName"].'_h.pov';
 
@@ -221,7 +222,10 @@ foreach ($filesToProcess as $file) {
             fwrite($fp, json_encode($statusJson));
             fclose($fp);
 
-            $final = imagecreate(($framesTotal+1)*$Width, $Height);
+            $final = imagecreatetruecolor(($framesTotal+1)*$Width, $Height);
+
+            $transparent = imagecolorallocatealpha( $final, 0, 0, 0, 127 );
+            imagefill( $final, 0, 0, $transparent ); 
 
             // Merging the 16 frames into 1 the 360 image
             for ($i = 0; $i < 16; $i++){
@@ -234,6 +238,15 @@ foreach ($filesToProcess as $file) {
 
                 // Copy the new frame inside the previously generated file
                 imagecopyresampled($final, $frameToAdd, $i*$Width, 0, 0, 0, $Width, $Height, $Width, $Height);
+
+                // Turn off alpha blending
+                imagealphablending($final, false);
+
+                // Do desired operations
+
+                // Set alpha flag
+                imagesavealpha($final, true);
+
 
                 imagepng($final, $OUTPUTARG.'/'.$file["objectName"].($x == 1 ? '_w' : '_h').'_360.png');
 
