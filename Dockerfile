@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get -y autoclean && \
     apt-get -y autoremove && \
-    apt-get -y install povray libpng-dev build-essential git assimp-utils && \
+    apt-get -y install povray libpng-dev build-essential git assimp-utils optipng && \
     docker-php-ext-install gd && \
     apt-get -y purge && \
     git clone https://github.com/MyMiniFactory/Fast-Quadric-Mesh-Simplification && \

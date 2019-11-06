@@ -248,12 +248,15 @@ foreach ($filesToProcess as $file) {
                 imagesavealpha($final, true);
 
 
-                imagepng($final, $OUTPUTARG.'/'.$file["objectName"].($x == 1 ? '_w' : '_h').'_360.png');
+                imagepng($final, $OUTPUTARG.'/'.$file["objectName"].($x == 1 ? '_w' : '_h').'_360.png', 9);
 
                 // Clearing file from memory
                 imagedestroy($frameToAdd);
                 imagedestroy($final);
             }
+
+            // Optipng
+            exec('optipng -o1 '.$OUTPUTARG.'/'.$file["objectName"].($x == 1 ? '_w' : '_h').'_360.png');
 
           }
 
