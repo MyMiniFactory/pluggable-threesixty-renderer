@@ -70,5 +70,6 @@ object {
   Center_Trans(m_body, x)
   Center_Trans(m_body, y)
   Center_Trans(m_body, z)
+  scale <-1,1,1>
   Rotate_Around_Trans(<360*clock, 0, 0>, <0, 0, 0>)
 }
