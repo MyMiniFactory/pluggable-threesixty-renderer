@@ -1,6 +1,6 @@
 # Threesixty Renderer
 
-[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/myminifactory/plugable-threesixty-renderer)](https://hub.docker.com/r/myminifactory/plugable-threesixty-renderer)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/myminifactory/pluggable-threesixty-renderer)](https://hub.docker.com/r/myminifactory/pluggable-threesixty-renderer)
 
 Threesixty Renderer is a docker container to generate two 360° images (one horizontal and one vertical) from a 3D file.
 It uses :
