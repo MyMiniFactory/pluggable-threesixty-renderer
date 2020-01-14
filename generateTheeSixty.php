@@ -49,7 +49,7 @@ foreach ($filesToProcess as $file) {
         if(file_exists($file["objectPath"]) &&  strtolower($file_extension) != "stl"){
           echo(PHP_EOL."Converting file to stl".PHP_EOL);
             $stlPath = str_replace($file_extension, 'stl', $file["objectPath"]);
-            exec("assimp export ".$file["objectPath"]." ".$stlPath);
+            exec("ctmconv ".$file["objectPath"]." ".$stlPath);
             if(file_exists($stlPath)){
               $file["objectPath"] = str_replace($file_extension, "stl", $file["objectPath"]);
             } else {
