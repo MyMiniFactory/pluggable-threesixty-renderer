@@ -41,10 +41,10 @@ background {color rgb 1}
 
 
 light_source {
-  <0, ((Y_pos*1.5)* -1), Z_offset*1.5>
+  <0, ((Y_pos*1.5)* -1), Z_pos*1.5>
   rgb 1
   parallel
-  point_at <0,0,0>
+  point_at <X_offset,Y_offset,Z_offset>
 }
 global_settings {
   assumed_gamma 2
@@ -55,9 +55,9 @@ camera {
   perspective
   right x
   up y
-  location <0, ((Y_pos*1.5)* -1), Z_offset>
+  location <0,(Y_pos*0.25)* -1, Z_pos>
   sky <0, 0, 1>
-  look_at <0, 0, 0>
+  look_at <X_offset, Y_offset, Z_offset>
 }
 background { colour rgbt <1,1,1,1> }
 
