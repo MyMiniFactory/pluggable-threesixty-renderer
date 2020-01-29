@@ -49,25 +49,34 @@ foreach ($filesToProcess as $file) {
         if(file_exists($file["objectPath"]) &&  strtolower($file_extension) != "stl"){
           echo(PHP_EOL."Converting file to stl".PHP_EOL);
             $stlPath = str_replace($file_extension, 'stl', $file["objectPath"]);
-            exec("ctmconv ".$file["objectPath"]." ".$stlPath, $outputConv);
+            exec("ctmconv ".$file["objectPath"]." ".$stlPath, $outputConvCTM);
+            // exec("assimp export ".$file["objectPath"]." ".$stlPath, $outputConv);
             if(file_exists($stlPath)){
               $file["objectPath"] = str_replace($file_extension, "stl", $file["objectPath"]);
             } else {
-              echo("Error in conversion : ");
-              var_dump($outputConv);
-              array_push($statusJson, [
-                "file conversion" => [
-                  "status" => "error",
-                  "message" => $outputConv
-                ]
-              ]);
-              $fp = fopen($STATUSARG.'/status.json', 'w');
-              fwrite($fp, json_encode($statusJson));
-              fclose($fp);
-              $fp = fopen('/app/files/results.json', 'w');
-                    fwrite($fp, json_encode($statusJson));
-                    fclose($fp);
-              return 0;
+              echo("Error with CtmConv : ");
+              var_dump($outputConvCTM);
+              echo(PHP_EOL."Trying  with assimp");
+              exec("assimp export ".$file["objectPath"]." ".$stlPath, $outputConvASS);
+              if(file_exists($stlPath)){
+                $file["objectPath"] = str_replace($file_extension, "stl", $file["objectPath"]);
+              } else {
+                echo("Error while converting : ");
+                var_dump($outputConvASS);
+                array_push($statusJson, [
+                  "file conversion" => [
+                    "status" => "error",
+                    "message" => $outputConvASS
+                  ]
+                ]);
+                $fp = fopen($STATUSARG.'/status.json', 'w');
+                fwrite($fp, json_encode($statusJson));
+                fclose($fp);
+                $fp = fopen('/app/files/results.json', 'w');
+                      fwrite($fp, json_encode($statusJson));
+                      fclose($fp);
+                return 0;
+              }
             }
         }
     } else {
@@ -81,12 +90,12 @@ foreach ($filesToProcess as $file) {
     echo($file["objectPath"]);
 
     // Stl simplification under threshold
-    $treshold = 5242880;
+    $treshold = 5;
     $filesize = filesize($file["objectPath"]);
     echo(PHP_EOL."old size : ".$filesize.PHP_EOL);
-    if ($filesize > $treshold) {
+    if ($filesize > ($treshold * 1024 * 1024)) {
       $path = "tmp/".$file["objectName"]."-simplified.stl";
-      $percentageDecrease = 1 - round(($filesize - $treshold)/$filesize, 2, PHP_ROUND_HALF_DOWN);
+      $percentageDecrease = ($treshold * ((100 * 1024 * 1024)/$filesize))/100;
       echo("Percentage to decrease: ".$percentageDecrease.PHP_EOL);
       exec("/app/a.out ".$file["objectPath"]." ".$path." ".$percentageDecrease, $outputSimp);
       
@@ -140,7 +149,7 @@ foreach ($filesToProcess as $file) {
         array_push($statusJson, [
           "stl2pov conversion" => [
             "status" => "done",
-            "progress" => "100%"
+            "progress" => "20%"
           ]
         ]);
         $fp = fopen($STATUSARG.'/status.json', 'w');
@@ -207,7 +216,7 @@ foreach ($filesToProcess as $file) {
         for ($x = 1; $x <= 2; $x++){
 
                     // Executing Povray
-          exec(($x == 1 ? $command1 : $command2));
+          exec(($x == 1 ? $command1 : $command2), $outputPOV);
 
           // Checking if the frames are generated.
           // We will assume that if frame 0 and 15 exists then the execution was successfull
@@ -217,7 +226,8 @@ foreach ($filesToProcess as $file) {
               // Writting the error on the status file
               array_push($statusJson, [
                 "Povray rendering" => [
-                  "status" => "error"
+                  "status" => "error",
+                  "message" => $outputSTLPOV
                 ]
               ]);
 
@@ -233,7 +243,7 @@ foreach ($filesToProcess as $file) {
             array_push($statusJson, [
               "Povray rendering" => [
                 "status" => "done",
-                "progress" => "100%"
+                "progress" => ($x == 1 ? '40%' : '60%')
               ]
             ]);
 
@@ -284,7 +294,7 @@ foreach ($filesToProcess as $file) {
           array_push($statusJson, [
             "360 making" => [
               "status" => "done",
-              "progress" => "100%"
+              "progress" => "80%"
             ]
           ]);
 

@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get -y autoclean && \
     apt-get -y autoremove && \
-    apt-get -y install povray libpng-dev build-essential git openctm-tools optipng && \
+    apt-get -y install povray libpng-dev build-essential git openctm-tools optipng assimp-utils && \
     docker-php-ext-install gd && \
     apt-get -y purge && \
     git clone https://github.com/MyMiniFactory/Fast-Quadric-Mesh-Simplification && \
@@ -19,6 +19,7 @@ RUN apt-get update && \
     cp stl2pov/stl2pov stl2povcompiled && \
     rm -r stl2pov && \
     mv stl2povcompiled stl2pov
+
 
 # Copy the script and the template
 Copy generateTheeSixty.php generateTheeSixty.php 
