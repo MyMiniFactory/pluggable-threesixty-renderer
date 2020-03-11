@@ -92,7 +92,29 @@ foreach ($filesToProcess as $file) {
     // Stl simplification under threshold
     $treshold = 5;
     $filesize = filesize($file["objectPath"]);
-    echo(PHP_EOL."old size : ".$filesize.PHP_EOL);
+    
+    if ($filesize <= 2) {
+      // File is too small to be a threedobject. Abort
+      $error = "File too small. Size: ". $filesize . " bytes";
+      echo(PHP_EOL . $error . PHP_EOL);
+      array_push($statusJson, [
+        "stl2pov conversion" => [
+          "status" => "error",
+          "message" => $error
+        ]
+      ]);
+
+      $fp = fopen($STATUSARG . '/status.json', 'w');
+      fwrite($fp, json_encode($statusJson));
+      fclose($fp);
+
+      $fp = fopen('/app/files/results.json', 'w');
+      fwrite($fp, json_encode($statusJson));
+      fclose($fp);
+      return 0;
+    }
+    
+    echo(PHP_EOL."old size: ".$filesize.PHP_EOL);
     if ($filesize > ($treshold * 1024 * 1024)) {
       $path = "tmp/".$file["objectName"]."-simplified.stl";
       $percentageDecrease = ($treshold * ((100 * 1024 * 1024)/$filesize))/100;
@@ -103,9 +125,9 @@ foreach ($filesToProcess as $file) {
 
         rename($path, $file["objectPath"]);
 
-        echo("new size : ".filesize($file["objectPath"]).PHP_EOL);
+        echo("new size: ".filesize($file["objectPath"]).PHP_EOL);
       } else {
-        echo("Error while simplifying file : ");
+        echo("Error while simplifying file: ");
         var_dump($outputSimp);
         array_push($statusJson, [
           "file simplification" => [
@@ -336,5 +358,3 @@ fwrite($fp, json_encode($statusJson));
 fclose($fp);
 
 return 0;
-
-?>
